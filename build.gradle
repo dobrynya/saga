@@ -1,0 +1,14 @@
+plugins {
+    id "com.github.maiflai.scalatest" version "0.10"
+}
+
+apply plugin: "scala"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.chuusai:shapeless_2.11:2.3.2"
+    testCompile "org.scalatest:scalatest_2.11:2+", "org.pegdown:pegdown:1.1.0"
+}
