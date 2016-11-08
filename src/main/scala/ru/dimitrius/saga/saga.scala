@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * @tparam T result type
   */
 class SagaPart[T](action: => T, val rollback: T => Unit) {
-  def run = action
+  def run: T = action
 }
 
 /**
@@ -47,7 +47,7 @@ class SagaBuilder[S <: HList] {
     * @return result of saga execution as a future
     */
   def run(implicit ec: ExecutionContext): Future[S] = {
-    val actions = Future.sequence(parts.map(makeFuture))
+    val actions = Future.sequence(parts map makeFuture)
 
     actions.flatMap {
       case results if results.forall(_.isRight) =>

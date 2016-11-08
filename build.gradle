@@ -9,6 +9,6 @@ repositories {
 }
 
 dependencies {
-    compile "com.chuusai:shapeless_2.11:2.3.2"
-    testCompile "org.scalatest:scalatest_2.11:2+", "org.pegdown:pegdown:1.1.0"
+    compile "com.chuusai:shapeless_2.12:2.3.2"
+    testCompile "org.scalatest:scalatest_2.12:3+", "org.pegdown:pegdown:1.1.0"
 }

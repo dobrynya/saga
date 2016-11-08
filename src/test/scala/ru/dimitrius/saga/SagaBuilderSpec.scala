@@ -2,13 +2,10 @@ package ru.dimitrius.saga
 
 import shapeless._
 import org.scalatest._
-import scala.util.Failure
-import scala.concurrent.Await
-import org.scalatest.concurrent.Futures
-import scala.concurrent.duration.Duration
+import org.scalatest.concurrent.ScalaFutures._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SagaBuilderSpec extends FlatSpec with Futures with Matchers {
+class SagaBuilderSpec extends FlatSpec with Matchers {
   behavior of "SagaBuilder"
 
   it should "build and run a successful saga" in {
@@ -22,9 +19,9 @@ class SagaBuilderSpec extends FlatSpec with Futures with Matchers {
         (bool, str, int)
     }
 
-    Await.result(result, Duration.Inf) should matchPattern {
+    whenReady(result) { _ should matchPattern {
       case (true, "success", 1) =>
-    }
+    }}
   }
 
   it should "roll back all successfully completed actions in case of a failed action" in {
@@ -38,10 +35,6 @@ class SagaBuilderSpec extends FlatSpec with Futures with Matchers {
         .part[String]("success", _ => rolledBack1 = true)
         .part[Boolean](true, _ => rolledBack2 = true)
         .run
-    Await.ready(sagaResult, Duration.Inf)
-
-    sagaResult.value should matchPattern {
-      case Some(Failure(SagaFailed(_, List(`error`)))) if rolledBack1 && rolledBack2 =>
-    }
+    sagaResult.failed.futureValue shouldBe an[SagaFailed]
   }
 }
